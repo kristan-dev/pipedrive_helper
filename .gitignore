@@ -2,5 +2,6 @@
 .vscode/
 
 env/
+util/
 
 .DS_Store
