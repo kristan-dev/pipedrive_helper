@@ -1,9 +1,8 @@
 import requests
 from datetime import datetime
 import json
+from util.config import cfg
 import logging
-import src.logger
-from src.config import cfg
 
 class PipedriveHelper:
   api_token = None

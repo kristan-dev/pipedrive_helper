@@ -3,5 +3,6 @@
 
 env/
 util/
+tests/
 
 .DS_Store
