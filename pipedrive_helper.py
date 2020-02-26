@@ -194,6 +194,66 @@ class PipedriveHelper:
     result = bytes(response.content).decode("utf-8")
     result = json.loads(result)
     return result["data"]
+  
+  def delete_person(self, person_id:str):
+    #NOTE: Given a person_id delete a contact from pipedrive with the matching person_id
+    delete_url = self.person_url+r"/"+person_id
+    response = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  def delete_person_bulk(self, person_ids):
+    #NOTE: Given a person_ids delete all contacts from pipedrive with matching person_ids
+    params = {
+      "api_token": self.api_token,
+      "ids": person_ids
+    }
+    response = requests.request(
+      "DELETE", 
+      self.person_url, 
+      headers=self.headers, 
+      params=params
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  def delete_personfield(self, personfield_id):
+    delete_url = self.person_fields_url+r"/"+personfield_id
+    response = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+
+  def delete_personfield_bulk(self, personfield_ids):
+    params = {
+      "api_token": self.api_token,
+      "ids": personfield_ids
+    }
+    response = requests.request(
+      "DELETE", 
+      self.person_fields_url, 
+      headers=self.headers, 
+      params=params
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
 
   # END PERSON FUNCTIONS ******************/
   
@@ -249,87 +309,6 @@ class PipedriveHelper:
     result = bytes(response.content).decode("utf-8")
     result = json.loads(result)
     return result["data"]
-  
-  # END PRODUCT FUNCTIONS ******************/
-
-  # /************ START, ORGANIZATION FUNCTIONS
-  
-  def get_all_orgfields(self):
-    response = requests.request(
-      "GET", 
-      self.org_fields_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  # END, ORGANIZATION FUNCTIONS ******************/
-
-  # /************ START, DEAL FUNCTIONS
-  
-  def get_all_dealfields(self):
-    response = requests.request(
-      "GET", 
-      self.deal_fields_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  # END, DEAL FUNCTIONS ******************/
-  
-  def add_org_field(self, field_name, field_type):
-    #NOTE: adds a custom field of given name/field of contact type: organization
-    data = {
-      "name": field_name,
-      "field_type": field_type
-    }
-
-    response = requests.request(
-      "POST", 
-      self.org_fields_url, 
-      data=data, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-
-  def add_organizations(self, org_args: dict):
-    #NOTE: Adds a contact using default fields
-    name = org_args.get("name", None)
-    if(name is None):
-      raise ValueError("name argument is required")
-
-    data = {}
-    data["name"] = name
-
-    visible_to = org_args.get("visible_to", None)
-    if(visible_to):
-      data["visible_to"] = visible_to
-    
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data["add_time"] = add_time
-
-    result = requests.request(
-      "POST", 
-      self.add_org_url, 
-      data=data, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    if(result.reason == "Created"):
-      return "Organization Created: "+str(result.status_code)
-    else:
-      raise ValueError(result.content)
   
   def add_product_custom(self, product_args: dict, customfieldkeys):
     data = {}
@@ -391,6 +370,143 @@ class PipedriveHelper:
       return "Product Updated: "+str(result.status_code)
     else:
       raise ValueError(result.content)
+
+  def delete_product(self, product_id):
+    delete_url = self.product_url+r"/"+product_id
+    response = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  def delete_products_bulk(self, product_ids):
+    for product_id in product_ids:
+
+      delete_url = self.product_url+r"/"+str(product_id)
+      response = requests.request(
+        "DELETE", 
+        delete_url, 
+        headers=self.headers, 
+        params=self.api_token
+      )
+
+      result = bytes(response.content).decode("utf-8")
+      result = json.loads(result)
+      result = json.dumps(result["data"])
+      logging.debug(result)
+  
+  def delete_productfield(self, productfield_id):
+    delete_url = self.product_fields_url+r"/"+productfield_id
+    response = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  def delete_productfield_bulk(self, productfield_ids):
+    params = {
+      "api_token": self.api_token,
+      "ids": productfield_ids
+    }
+    response = requests.request(
+      "DELETE", 
+      self.product_fields_url, 
+      headers=self.headers, 
+      params=params
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  # END PRODUCT FUNCTIONS ******************/
+
+  # /************ START, ORGANIZATION FUNCTIONS
+  
+  def get_all_orgfields(self):
+    response = requests.request(
+      "GET", 
+      self.org_fields_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  def add_org_field(self, field_name, field_type):
+    #NOTE: adds a custom field of given name/field of contact type: organization
+    data = {
+      "name": field_name,
+      "field_type": field_type
+    }
+
+    response = requests.request(
+      "POST", 
+      self.org_fields_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+
+  def add_organizations(self, org_args: dict):
+    #NOTE: Adds a contact using default fields
+    name = org_args.get("name", None)
+    if(name is None):
+      raise ValueError("name argument is required")
+
+    data = {}
+    data["name"] = name
+
+    visible_to = org_args.get("visible_to", None)
+    if(visible_to):
+      data["visible_to"] = visible_to
+    
+    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
+
+    result = requests.request(
+      "POST", 
+      self.add_org_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "Created"):
+      return "Organization Created: "+str(result.status_code)
+    else:
+      raise ValueError(result.content)
+  
+  # END, ORGANIZATION FUNCTIONS ******************/
+
+  # /************ START, DEAL FUNCTIONS
+  
+  def get_all_dealfields(self):
+    response = requests.request(
+      "GET", 
+      self.deal_fields_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
   
   def add_deal_custom(self, person_args: dict, customfieldkeys):
     data = {}
@@ -493,126 +609,8 @@ class PipedriveHelper:
       return rest_result
     else:
       raise ValueError(result.content)
-
   
-  
-  def delete_product(self, product_id):
-    delete_url = self.product_url+r"/"+product_id
-    response = requests.request(
-      "DELETE", 
-      delete_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def delete_products_bulk(self, product_ids):
-    for product_id in product_ids:
-
-      delete_url = self.product_url+r"/"+str(product_id)
-      response = requests.request(
-        "DELETE", 
-        delete_url, 
-        headers=self.headers, 
-        params=self.api_token
-      )
-
-      result = bytes(response.content).decode("utf-8")
-      result = json.loads(result)
-      result = json.dumps(result["data"])
-      logging.debug(result)
-
-  def delete_person(self, person_id:str):
-    #NOTE: Given a person_id delete a contact from pipedrive with the matching person_id
-    delete_url = self.person_url+r"/"+person_id
-    response = requests.request(
-      "DELETE", 
-      delete_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def delete_person_bulk(self, person_ids):
-    #NOTE: Given a person_ids delete all contacts from pipedrive with matching person_ids
-    params = {
-      "api_token": self.api_token,
-      "ids": person_ids
-    }
-    response = requests.request(
-      "DELETE", 
-      self.person_url, 
-      headers=self.headers, 
-      params=params
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def delete_productfield(self, productfield_id):
-    delete_url = self.product_fields_url+r"/"+productfield_id
-    response = requests.request(
-      "DELETE", 
-      delete_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def delete_productfield_bulk(self, productfield_ids):
-    params = {
-      "api_token": self.api_token,
-      "ids": productfield_ids
-    }
-    response = requests.request(
-      "DELETE", 
-      self.product_fields_url, 
-      headers=self.headers, 
-      params=params
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def delete_personfield(self, personfield_id):
-    delete_url = self.person_fields_url+r"/"+personfield_id
-    response = requests.request(
-      "DELETE", 
-      delete_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-
-  def delete_personfield_bulk(self, personfield_ids):
-    params = {
-      "api_token": self.api_token,
-      "ids": personfield_ids
-    }
-    response = requests.request(
-      "DELETE", 
-      self.person_fields_url, 
-      headers=self.headers, 
-      params=params
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
+  # END, DEAL FUNCTIONS ******************/
 
 
 if(__name__ == "__main__"):
