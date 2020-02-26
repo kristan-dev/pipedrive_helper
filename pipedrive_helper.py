@@ -23,99 +23,81 @@ class PipedriveHelper:
   def __init__(self, api_token):
     self.api_token = {"api_token":api_token}
   
-  def find_person_by_name(self, keyword: str):
-    find_url = self.person_url+r"/"+"find"
+  # /********** START - Pipedrive Person Functions
 
-    params = {
-      "api_token": self.api_token,
-      "term": keyword,
-      "start": 0
-    }
+  def add_persons(self, person_args: dict): 
+    #NOTE: Adds a contact using default fields
+    name = person_args.get("name", None)
+    if(name is None):
+      raise ValueError("name argument is required")
 
-    response = requests.request(
-      "GET", 
-      find_url, 
-      headers=self.headers, 
-      params=params
-    )
+    data = {}
+    data["name"] = name
 
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def find_product_by_name(self, keyword: str):
-    find_url = self.product_url+r"/"+"find"
+    owner_id = person_args.get("owner_id", None)
+    if(owner_id):
+      data["owner_id"] = owner_id
 
-    params = {
-      "api_token": self.api_token,
-      "term": keyword,
-      "start": 0
-    }
+    org_id = person_args.get("org_id", None)
+    if(org_id):
+      data["org_id"] = org_id
 
-    response = requests.request(
-      "GET", 
-      find_url, 
-      headers=self.headers, 
-      params=params
-    )
+    email = person_args.get("email", None)
+    if(email):
+      data["email"] = email
+ 
+    phone = person_args.get("phone", None)
+    if(phone):
+      data["phone"] = phone
 
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def get_all_orgfields(self):
-    #NOTE: Gets all existing fields of contact type: person
-    response = requests.request(
-      "GET", 
-      self.person_fields_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def get_all_dealfields(self):
-    #NOTE: Gets all existing fields of contact type: person
-    response = requests.request(
-      "GET", 
-      self.deal_fields_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
+    visible_to = person_args.get("visible_to", None)
+    if(visible_to):
+      data["visible_to"] = visible_to
+    
+    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
 
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
-  def get_all_productfields(self):
-    #NOTE: Gets all existing fields of contact type: person
-    response = requests.request(
-      "GET", 
-      self.product_fields_url, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-
-  def get_all_persons(self):
-    #NOTE: Gets all persons
-    response = requests.request(
-      "GET", 
+    result = requests.request(
+      "POST", 
       self.person_url, 
+      data=data, 
       headers=self.headers, 
       params=self.api_token
     )
 
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
-  
+    if(result.reason == "Created"):
+      return "Person Created: "+str(result.status_code)
+    else:
+      raise ValueError(result.content)
+
+  def update_person(self, product_args: dict, customfieldkeys, person_id):
+    update_url = self.person_url+r"/"+person_id
+
+    data = {}
+
+    for field in customfieldkeys:
+      name = field[0]
+      key = field[1]
+      if(product_args.get(name, None)):
+        data[key] = product_args[name]
+    
+    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
+
+    result = requests.request(
+      "PUT", 
+      update_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      return "Product Created: "+str(result.status_code)
+    else:
+      raise ValueError(result.content)
+
   def get_all_personfields(self):
-    #NOTE: Gets all existing fields of contact type: person
     response = requests.request(
       "GET", 
       self.person_fields_url, 
@@ -145,6 +127,109 @@ class PipedriveHelper:
     result = bytes(response.content).decode("utf-8")
     result = json.loads(result)
     return result["data"]
+
+  def add_person_custom(self, person_args: dict, customfieldkeys):
+    data = {}
+
+    for field in customfieldkeys:
+      name = field[0]
+      key = field[1]
+      if(person_args.get(name, None)):
+        data[key] = person_args[name]
+    
+    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
+
+    result = requests.request(
+      "POST", 
+      self.person_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "Created"):
+      logging.debug("Person Created: "+str(result.status_code))
+      rest_result = {}
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      rest_result["data"] = json.loads(result.text)["data"]
+      return rest_result
+    else:
+      raise ValueError(result.content)
+
+  def get_all_persons(self):
+    #NOTE: Gets all persons
+    response = requests.request(
+      "GET", 
+      self.person_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  def find_person_by_name(self, keyword: str):
+    find_url = self.person_url+r"/"+"find"
+
+    params = {
+      "api_token": self.api_token,
+      "term": keyword,
+      "start": 0
+    }
+
+    response = requests.request(
+      "GET", 
+      find_url, 
+      headers=self.headers, 
+      params=params
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+
+  # END PERSON FUNCTIONS ******************/
+  
+  # /************ START - PRODUCT FUNCTIONS
+  
+  def find_product_by_name(self, keyword: str):
+    find_url = self.product_url+r"/"+"find"
+
+    params = {
+      "api_token": self.api_token,
+      "term": keyword,
+      "start": 0
+    }
+
+    response = requests.request(
+      "GET", 
+      find_url, 
+      headers=self.headers, 
+      params=params
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+
+  def get_all_productfields(self):
+    response = requests.request(
+      "GET", 
+      self.product_fields_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
   
   def add_product_field(self, field_name, field_type):
     #NOTE: adds a custom field of given name/field type of Products
@@ -164,6 +249,39 @@ class PipedriveHelper:
     result = bytes(response.content).decode("utf-8")
     result = json.loads(result)
     return result["data"]
+  
+  # END PRODUCT FUNCTIONS ******************/
+
+  # /************ START, ORGANIZATION FUNCTIONS
+  
+  def get_all_orgfields(self):
+    response = requests.request(
+      "GET", 
+      self.org_fields_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  # END, ORGANIZATION FUNCTIONS ******************/
+
+  # /************ START, DEAL FUNCTIONS
+  
+  def get_all_dealfields(self):
+    response = requests.request(
+      "GET", 
+      self.deal_fields_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    result = bytes(response.content).decode("utf-8")
+    result = json.loads(result)
+    return result["data"]
+  
+  # END, DEAL FUNCTIONS ******************/
   
   def add_org_field(self, field_name, field_type):
     #NOTE: adds a custom field of given name/field of contact type: organization
@@ -273,67 +391,6 @@ class PipedriveHelper:
       return "Product Updated: "+str(result.status_code)
     else:
       raise ValueError(result.content)
-
-  def update_person(self, product_args: dict, customfieldkeys, person_id):
-    update_url = self.person_url+r"/"+person_id
-
-    data = {}
-
-    for field in customfieldkeys:
-      name = field[0]
-      key = field[1]
-      if(product_args.get(name, None)):
-        data[key] = product_args[name]
-    
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data["add_time"] = add_time
-
-    result = requests.request(
-      "PUT", 
-      update_url, 
-      data=data, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    if(result.reason == "OK"):
-      return "Product Created: "+str(result.status_code)
-    else:
-      raise ValueError(result.content)
-  
-  def add_person_custom(self, person_args: dict, customfieldkeys):
-    data = {}
-
-    for field in customfieldkeys:
-      name = field[0]
-      key = field[1]
-      if(person_args.get(name, None)):
-        data[key] = person_args[name]
-    
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data["add_time"] = add_time
-
-    result = requests.request(
-      "POST", 
-      self.person_url, 
-      data=data, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    if(result.reason == "Created"):
-      logging.debug("Person Created: "+str(result.status_code))
-      rest_result = {}
-      rest_result["headers"] = (
-        result.headers._store['x-ratelimit-limit'], 
-        result.headers._store['x-ratelimit-remaining'],
-        result.headers._store['x-ratelimit-reset'],
-        result.headers._store['x-daily-requests-left']
-      )
-      rest_result["data"] = json.loads(result.text)["data"]
-      return rest_result
-    else:
-      raise ValueError(result.content)
   
   def add_deal_custom(self, person_args: dict, customfieldkeys):
     data = {}
@@ -437,50 +494,7 @@ class PipedriveHelper:
     else:
       raise ValueError(result.content)
 
-  def add_persons(self, person_args: dict): 
-    #NOTE: Adds a contact using default fields
-    name = person_args.get("name", None)
-    if(name is None):
-      raise ValueError("name argument is required")
-
-    data = {}
-    data["name"] = name
-
-    owner_id = person_args.get("owner_id", None)
-    if(owner_id):
-      data["owner_id"] = owner_id
-
-    org_id = person_args.get("org_id", None)
-    if(org_id):
-      data["org_id"] = org_id
-
-    email = person_args.get("email", None)
-    if(email):
-      data["email"] = email
- 
-    phone = person_args.get("phone", None)
-    if(phone):
-      data["phone"] = phone
-
-    visible_to = person_args.get("visible_to", None)
-    if(visible_to):
-      data["visible_to"] = visible_to
-    
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    data["add_time"] = add_time
-
-    result = requests.request(
-      "POST", 
-      self.person_url, 
-      data=data, 
-      headers=self.headers, 
-      params=self.api_token
-    )
-
-    if(result.reason == "Created"):
-      return "Person Created: "+str(result.status_code)
-    else:
-      raise ValueError(result.content)
+  
   
   def delete_product(self, product_id):
     delete_url = self.product_url+r"/"+product_id
