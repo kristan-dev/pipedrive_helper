@@ -120,16 +120,26 @@ class PipedriveHelper:
   
   def delete_product(self, product_id: str):
     delete_url = self.product_url+r"/"+product_id
-    response = requests.request(
+
+    result = requests.request(
       "DELETE", 
       delete_url, 
       headers=self.headers, 
       params=self.api_token
     )
 
-    result = bytes(response.content).decode("utf-8")
-    result = json.loads(result)
-    return result["data"]
+    if(result.reason == "OK"):
+      logging.debug("Product Deleted: "+str(result.status_code))
+      rest_result = {}
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
 
   # /********** END - PRODUCT FUNCTIONS **********/
 
@@ -173,6 +183,6 @@ if(__name__ == "__main__"):
   }
   # rest_result = pipedrivehelper.add_product(data)
   # rest_result = pipedrivehelper.update_product(data, "1")
-  # rest_result = pipedrivehelper.delete_product("1")
+  # rest_result = pipedrivehelper.delete_product("2")
   pass
 
