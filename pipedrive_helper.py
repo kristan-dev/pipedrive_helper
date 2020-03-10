@@ -59,8 +59,19 @@ class PipedriveHelper:
   # /********** END - PERSON FUNCTIONS **********/
 
   # /********** START - PRODUCT FUNCTIONS **********/
+
   def add_product(self, product_args: dict) -> dict:
-    """ Add a single person to your contacts in Piprdrive """
+    #TODO: Add proper documentation
+    """ 
+    Adds a single product to your contacts in Piprdrive. Returns API call status and API rate limit info.
+    
+    Example:
+      data = {
+        "name": John, # where "name" is a sample of a default field
+        "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+        }
+      add_product(data)
+    """
     data = product_args
     add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data["add_time"] = add_time
@@ -77,7 +88,8 @@ class PipedriveHelper:
       # logging.debug("Product Created: "+str(result.status_code))
 
       rest_result = {}
-      rest_result["data"] = "Product Created: "+str(result.status_code)
+      rest_result["status"] = "Product Created: "+str(result.status_code)
+      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -88,7 +100,20 @@ class PipedriveHelper:
     else:
       raise ValueError(result.content)
   
-  def update_product(self, product_args: dict, product_id: str):
+  def update_product(self, product_args: dict, product_id: str) -> dict:
+    """ 
+    Updates an existing product in Pipedrive. Returns REST result status and API rate limit info.
+    
+    Example:
+
+    Only add the fields/customfields you want to update.
+
+      data = {
+        "name": John, # where "name" is a sample of a default field
+        "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
+        }
+      update_product(data, "1")
+    """
     update_url = self.product_url+r"/"+product_id
 
     data = product_args
@@ -107,7 +132,8 @@ class PipedriveHelper:
       # logging.debug("Product Updated: "+str(result.status_code))
 
       rest_result = {}
-      rest_result["data"] = "Product Updated: "+str(result.status_code)
+      rest_result["status"] = "Product Updated: "+str(result.status_code)
+      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -119,6 +145,13 @@ class PipedriveHelper:
       raise ValueError(result.content)
   
   def delete_product(self, product_id: str):
+    """ 
+    Deletes an existing product in Pipedrive. Returns REST result status and API rate limit info.
+
+    Example:
+
+    delete_product("1") # where "1" is the pipedrive product id
+    """
     delete_url = self.product_url+r"/"+product_id
 
     result = requests.request(
@@ -132,7 +165,8 @@ class PipedriveHelper:
       # logging.debug("Product Deleted: "+str(result.status_code))
 
       rest_result = {}
-      rest_result["data"] = "Product Deleted: "+str(result.status_code)
+      rest_result["result"] = "Product Deleted: "+str(result.status_code)
+      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -184,7 +218,7 @@ if(__name__ == "__main__"):
     "38669eac9be36017c339ef6d9d7db63ab2534376": "M"
   }
   rest_result = pipedrivehelper.add_product(data)
-  # rest_result = pipedrivehelper.update_product(data, "1")
-  # rest_result = pipedrivehelper.delete_product("2")
+  rest_result = pipedrivehelper.update_product(data, "1")
+  rest_result = pipedrivehelper.delete_product("2")
   pass
 
