@@ -4,11 +4,50 @@ import json
 import logging
 
 class PipedriveHelper:
+  """
+  A class that simplifies the use of the Pipedrive REST API
+
+    ...
+    Constructors
+    ----------
+    api_token : str
+        your pipedrive api token.
+
+    Attributes
+    ----------
+    product_url : str
+        api url for all product methods
+    person_url : str
+        api url for all product methods
+    deal_url : str
+        api url for all deal methods
+    org_url : str
+        api url for all org methods
+    person_fields_url : str
+        api url for all personfield methods
+    product_fields_url : str
+        api url for all productfield methods
+    deal_fields_url : str
+        api url for all dealfield methods
+    org_fields_url : str
+        api url for all orgfield methods
+
+    Methods
+    -------
+    add_person(self, person_args: dict) returns dict
+        Add a single person to contacts in Piprdrive
+    add_product(self, product_args: dict) returns dict
+        Add a single person to products in Piprdrive
+    update_product(self, product_args: dict, product_id: str) returns dict
+        Updates an existing product in Pipedrive.
+    delete_product(self, product_id: str) returns dict
+        Deletes an existing product in Pipedrive.
+  """
   api_token = None
   product_url = "https://api.pipedrive.com/v1/products"
   person_url = "https://api.pipedrive.com/v1/persons"
   deal_url = "https://api.pipedrive.com/v1/deals"
-  add_org_url = "https://api.pipedrive.com/v1/organizations"
+  org_url = "https://api.pipedrive.com/v1/organizations"
   person_fields_url = "https://api.pipedrive.com/v1/personFields"
   org_fields_url = "https://api.pipedrive.com/v1/organizationFields"
   product_fields_url = "https://api.pipedrive.com/v1/productFields"
@@ -24,7 +63,19 @@ class PipedriveHelper:
 
   # /********** START - PERSON FUNCTIONS **********/
   def add_person(self, person_args: dict) -> dict:
-    """ Add a single person to your contacts in Piprdrive """
+    """
+    Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "name": John, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+            }
+    """
 
     data = person_args
     add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -62,15 +113,20 @@ class PipedriveHelper:
 
   def add_product(self, product_args: dict) -> dict:
     #TODO: Add proper documentation
-    """ 
-    Adds a single product to your contacts in Piprdrive. Returns API call status and API rate limit info.
-    
-    Example:
-      data = {
-        "name": John, # where "name" is a sample of a default field
-        "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
-        }
-      add_product(data)
+    """Add a single person to products in Piprdrive. Returns API call status and API rate limit info.
+
+    Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "name": John, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+              }
+            add_product(data)
     """
     data = product_args
     add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -101,18 +157,24 @@ class PipedriveHelper:
       raise ValueError(result.content)
   
   def update_product(self, product_args: dict, product_id: str) -> dict:
-    """ 
-    Updates an existing product in Pipedrive. Returns REST result status and API rate limit info.
-    
-    Example:
+    """Updates an existing product in Pipedrive.Returns REST result status and API rate limit info.
 
-    Only add the fields/customfields you want to update.
+    Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            Only add the fields/customfields you want to update.
 
-      data = {
-        "name": John, # where "name" is a sample of a default field
-        "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
-        }
-      update_product(data, "1")
+              data = {
+                "name": John, # where "name" is a sample of a default field
+                "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
+                }
+              update_product(data, "1")
     """
     update_url = self.product_url+r"/"+product_id
 
@@ -145,12 +207,18 @@ class PipedriveHelper:
       raise ValueError(result.content)
   
   def delete_product(self, product_id: str):
-    """ 
-    Deletes an existing product in Pipedrive. Returns REST result status and API rate limit info.
+    """Deletes an existing product in Pipedrive. Returns REST result status and API rate limit info.
 
-    Example:
-
-    delete_product("1") # where "1" is the pipedrive product id
+    Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            delete_product("1") # where "1" is the pipedrive product id
     """
     delete_url = self.product_url+r"/"+product_id
 
