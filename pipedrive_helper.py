@@ -74,18 +74,16 @@ class PipedriveHelper:
     )
 
     if(result.reason == "Created"):
-      logging.debug("Product Created: "+str(result.status_code))
+      # logging.debug("Product Created: "+str(result.status_code))
+
       rest_result = {}
+      rest_result["data"] = "Product Created: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
-      rest_result["data"] = json.loads(result.text)["data"]
-
-      logging.debug(rest_result["data"])
-
       return rest_result
     else:
       raise ValueError(result.content)
@@ -106,8 +104,10 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      logging.debug("Product Updated: "+str(result.status_code))
+      # logging.debug("Product Updated: "+str(result.status_code))
+
       rest_result = {}
+      rest_result["data"] = "Product Updated: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -129,8 +129,10 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      logging.debug("Product Deleted: "+str(result.status_code))
+      # logging.debug("Product Deleted: "+str(result.status_code))
+
       rest_result = {}
+      rest_result["data"] = "Product Deleted: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -181,7 +183,7 @@ if(__name__ == "__main__"):
     "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92,
     "38669eac9be36017c339ef6d9d7db63ab2534376": "M"
   }
-  # rest_result = pipedrivehelper.add_product(data)
+  rest_result = pipedrivehelper.add_product(data)
   # rest_result = pipedrivehelper.update_product(data, "1")
   # rest_result = pipedrivehelper.delete_product("2")
   pass
