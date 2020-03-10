@@ -4,5 +4,6 @@
 env/
 util/
 tests/
+.mypy_cache/
 
 .DS_Store
