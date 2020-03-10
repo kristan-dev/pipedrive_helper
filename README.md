@@ -1,11 +1,14 @@
 # Pipedrive REST API Helper
 
 (This is a work in progress)
-This is a helper library for Pipedrive's rest API. At the moment, this helper is capable of Add, Update, and Delete of Products. There is also an Add person (for Pipedrive Contacts), but is incomplete, I've yet to add Update and Delete functions.
+This is a helper library for Pipedrive's rest API. At the moment, the helper is capable of Add, Update, and Delete for Products. Helper is also capable of Add Person, but is yet to support Edit and Delete. I will be adding those shortly.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Install all libraries in requirements.txt
+
+To install:
+pip install -r requirements.txt
 
 ### Prerequisites
 
