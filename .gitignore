@@ -6,6 +6,4 @@ util/
 tests/
 .mypy_cache/
 
-requirements.txt
-
 .DS_Store
