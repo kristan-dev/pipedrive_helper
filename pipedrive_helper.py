@@ -277,16 +277,5 @@ class PipedriveHelper:
   # /********** END - DEAL FUNCTIONS **********/
 
 if(__name__ == "__main__"):
-  pipedrivehelper = PipedriveHelper(api_token='c1bb21ca57499126de776a86815cee1e70480709')
-  data = {
-    "name": "YAKUZA 0",
-    "89eb02cf19edfffc65ad3f54cc696561f5a5085f": "Ryu ga Gotoku Studios",
-    "d5055cfbacfe85a2eca715dae62d0544a924f36c": "Action Adventure, Open-World",
-    "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92,
-    "38669eac9be36017c339ef6d9d7db63ab2534376": "M"
-  }
-  rest_result = pipedrivehelper.add_product(data)
-  rest_result = pipedrivehelper.update_product(data, "1")
-  rest_result = pipedrivehelper.delete_product("2")
   pass
 
