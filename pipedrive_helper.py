@@ -106,6 +106,92 @@ class PipedriveHelper:
       return rest_result
     else:
       raise ValueError(result.content)
+  
+  def update_person(self, person_args: dict, person_id: str) -> dict:
+    """Updates an existing contact in Pipedrive. Returns REST result status and API rate limit info.
+
+    Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            Only add the fields/customfields you want to update.
+
+              data = {
+                "name": John, # where "name" is a sample of a default field
+                "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
+                }
+              update_product(data, "1")
+    """
+    update_url = self.person_url+r"/"+person_id
+    data = person_args
+    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
+
+    result = requests.request(
+      "PUT", 
+      update_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      # logging.debug("Person Updated: "+str(result.status_code))
+
+      rest_result = {}
+      rest_result["status"] = "Product Updated: "+str(result.status_code)
+      rest_result["data"] = None
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
+
+  def delete_person(self, person_id: str) -> dict:
+    """Deletes an existing contact in Pipedrive. Returns REST result status and API rate limit info.
+
+    Parameters
+        ----------
+        person_id : str
+            Pipedrive person id
+            
+        Usage
+        ----------
+            delete_person("1") # where "1" is the pipedrive person id
+    """
+    delete_url = self.person_url+r"/"+person_id
+
+    result = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      # logging.debug("Person Deleted: "+str(result.status_code))
+
+      rest_result = {}
+      rest_result["result"] = "Person Deleted: "+str(result.status_code)
+      rest_result["data"] = None
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
 
   # /********** END - PERSON FUNCTIONS **********/
 
@@ -113,7 +199,7 @@ class PipedriveHelper:
 
   def add_product(self, product_args: dict) -> dict:
     #TODO: Add proper documentation
-    """Add a single person to products in Piprdrive. Returns API call status and API rate limit info.
+    """Add a single row to products in Piprdrive. Returns API call status and API rate limit info.
 
     Parameters
         ----------
@@ -161,7 +247,7 @@ class PipedriveHelper:
 
     Parameters
         ----------
-        person_args : dict
+        product_args : dict
             Values for each column for a single contact. Accepts default fields and custom fields.
         product_id : str
             Pipedrive product id
@@ -277,16 +363,7 @@ class PipedriveHelper:
   # /********** END - DEAL FUNCTIONS **********/
 
 if(__name__ == "__main__"):
-  pipedrivehelper = PipedriveHelper(api_token='c1bb21ca57499126de776a86815cee1e70480709')
-  data = {
-    "name": "YAKUZA 0",
-    "89eb02cf19edfffc65ad3f54cc696561f5a5085f": "Ryu ga Gotoku Studios",
-    "d5055cfbacfe85a2eca715dae62d0544a924f36c": "Action Adventure, Open-World",
-    "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92,
-    "38669eac9be36017c339ef6d9d7db63ab2534376": "M"
-  }
-  rest_result = pipedrivehelper.add_product(data)
-  rest_result = pipedrivehelper.update_product(data, "1")
-  rest_result = pipedrivehelper.delete_product("2")
+  pipedrivehelper = PipedriveHelper("c1bb21ca57499126de776a86815cee1e70480709")
+
   pass
 
