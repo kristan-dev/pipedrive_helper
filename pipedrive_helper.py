@@ -277,11 +277,9 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      # logging.debug("Product Updated: "+str(result.status_code))
 
       rest_result = {}
       rest_result["status"] = "Product Updated: "+str(result.status_code)
-      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -314,11 +312,9 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      # logging.debug("Product Deleted: "+str(result.status_code))
 
       rest_result = {}
       rest_result["result"] = "Product Deleted: "+str(result.status_code)
-      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -360,7 +356,7 @@ class PipedriveHelper:
     )
 
     if(result.reason == "Created"):
-      logging.debug("Deal Created: "+str(result.status_code))
+      rest_result["status"] = "Deal Created: "+str(result.status_code)
       rest_result = {}
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
@@ -406,7 +402,6 @@ class PipedriveHelper:
 
       rest_result = {}
       rest_result["status"] = "Deal Updated: "+str(result.status_code)
-      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -444,7 +439,6 @@ class PipedriveHelper:
 
       rest_result = {}
       rest_result["result"] = "Product Deleted: "+str(result.status_code)
-      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
