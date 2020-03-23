@@ -7,3 +7,5 @@ tests/
 .mypy_cache/
 
 .DS_Store
+
+*.pyc
