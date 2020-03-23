@@ -458,7 +458,4 @@ class PipedriveHelper:
   # /********** END - DEAL FUNCTIONS **********/
 
 if(__name__ == "__main__"):
-  pipedrivehelper = PipedriveHelper("c1bb21ca57499126de776a86815cee1e70480709")
-
   pass
-
