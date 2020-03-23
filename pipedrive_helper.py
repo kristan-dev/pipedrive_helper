@@ -90,19 +90,15 @@ class PipedriveHelper:
     )
 
     if(result.reason == "Created"):
-      logging.debug("Person Created: "+str(result.status_code))
-
       rest_result = {}
+      rest_result["status"] = "Person Created: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
-      rest_result["data"] = json.loads(result.text)["data"]
-
-      logging.debug(rest_result["data"])
-      
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -141,17 +137,15 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      # logging.debug("Person Updated: "+str(result.status_code))
-
       rest_result = {}
       rest_result["status"] = "Product Updated: "+str(result.status_code)
-      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -189,6 +183,7 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -227,8 +222,6 @@ class PipedriveHelper:
     )
 
     if(result.reason == "Created"):
-      # logging.debug("Product Created: "+str(result.status_code))
-
       rest_result = {}
       rest_result["status"] = "Product Created: "+str(result.status_code)
       rest_result["data"] = None
@@ -238,6 +231,7 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -277,7 +271,6 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-
       rest_result = {}
       rest_result["status"] = "Product Updated: "+str(result.status_code)
       rest_result["headers"] = (
@@ -286,6 +279,7 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -321,6 +315,7 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -364,7 +359,7 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
-      rest_result["data"] = json.loads(result.text)["data"]
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -398,8 +393,6 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      # logging.debug("Deal Updated: "+str(result.status_code))
-
       rest_result = {}
       rest_result["status"] = "Deal Updated: "+str(result.status_code)
       rest_result["headers"] = (
@@ -408,6 +401,7 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
@@ -424,7 +418,6 @@ class PipedriveHelper:
         ----------
             delete_deal("1") # where "1" is the pipedrive product id
     """
-
     delete_url = self.deal_url+r"/"+deal_id
 
     result = requests.request(
@@ -435,16 +428,15 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      # logging.debug("Product Deleted: "+str(result.status_code))
-
       rest_result = {}
-      rest_result["result"] = "Product Deleted: "+str(result.status_code)
+      rest_result["status"] = "Product Deleted: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
         result.headers._store['x-ratelimit-reset'],
         result.headers._store['x-daily-requests-left']
       )
+      rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
     else:
       raise ValueError(result.content)
