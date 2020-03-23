@@ -72,13 +72,13 @@ class PipedriveHelper:
         Usage
         ----------
             data = {
-              "name": John, # where "name" is a sample of a default field
+              "name": Luke, # where "name" is a sample of a default field
               "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
             }
     """
 
     data = person_args
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    add_time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     data["add_time"] = add_time
 
     result = requests.request(
@@ -106,6 +106,92 @@ class PipedriveHelper:
       return rest_result
     else:
       raise ValueError(result.content)
+  
+  def update_person(self, person_args: dict, person_id: str) -> dict:
+    """Updates an existing contact in Pipedrive. Returns REST result status and API rate limit info.
+
+    Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            Only add the fields/customfields you want to update.
+
+              data = {
+                "name": John, # where "name" is a sample of a default field
+                "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
+                }
+              update_product(data, "1")
+    """
+    update_url = self.person_url+r"/"+person_id
+    data = person_args
+    add_time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
+
+    result = requests.request(
+      "PUT", 
+      update_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      # logging.debug("Person Updated: "+str(result.status_code))
+
+      rest_result = {}
+      rest_result["status"] = "Product Updated: "+str(result.status_code)
+      rest_result["data"] = None
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
+
+  def delete_person(self, person_id: str) -> dict:
+    """Deletes an existing contact in Pipedrive. Returns REST result status and API rate limit info.
+
+    Parameters
+        ----------
+        person_id : str
+            Pipedrive person id
+            
+        Usage
+        ----------
+            delete_person("1") # where "1" is the pipedrive person id
+    """
+    delete_url = self.person_url+r"/"+person_id
+
+    result = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      # logging.debug("Person Deleted: "+str(result.status_code))
+
+      rest_result = {}
+      rest_result["result"] = "Person Deleted: "+str(result.status_code)
+      rest_result["data"] = None
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
 
   # /********** END - PERSON FUNCTIONS **********/
 
@@ -113,7 +199,7 @@ class PipedriveHelper:
 
   def add_product(self, product_args: dict) -> dict:
     #TODO: Add proper documentation
-    """Add a single person to products in Piprdrive. Returns API call status and API rate limit info.
+    """Add a single row to products in Piprdrive. Returns API call status and API rate limit info.
 
     Parameters
         ----------
@@ -123,13 +209,13 @@ class PipedriveHelper:
         Usage
         ----------
             data = {
-              "name": John, # where "name" is a sample of a default field
+              "name": "SCPH-90006", # where "name" is a sample of a default field
               "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
               }
             add_product(data)
     """
     data = product_args
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    add_time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     data["add_time"] = add_time
 
     result = requests.request(
@@ -161,7 +247,7 @@ class PipedriveHelper:
 
     Parameters
         ----------
-        person_args : dict
+        product_args : dict
             Values for each column for a single contact. Accepts default fields and custom fields.
         product_id : str
             Pipedrive product id
@@ -171,7 +257,7 @@ class PipedriveHelper:
             Only add the fields/customfields you want to update.
 
               data = {
-                "name": John, # where "name" is a sample of a default field
+                "name": "SCPH-90006", # where "name" is a sample of a default field
                 "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
                 }
               update_product(data, "1")
@@ -179,7 +265,7 @@ class PipedriveHelper:
     update_url = self.product_url+r"/"+product_id
 
     data = product_args
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    add_time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     data["add_time"] = add_time
 
     result = requests.request(
@@ -211,8 +297,6 @@ class PipedriveHelper:
 
     Parameters
         ----------
-        person_args : dict
-            Values for each column for a single contact. Accepts default fields and custom fields.
         product_id : str
             Pipedrive product id
             
@@ -248,9 +332,23 @@ class PipedriveHelper:
   # /********** END - PRODUCT FUNCTIONS **********/
 
   # /********** START - DEAL FUNCTIONS **********/
-  def add_deal_custom(self, deal_args: dict):
+  def add_deal(self, deal_args: dict) -> dict:
+    """
+    Parameters
+        ----------
+        deal_args : dict
+            Values for each column for a single deal. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "name": John, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+            }
+    """
+
     data = deal_args
-    add_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    add_time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
     data["add_time"] = add_time
     
     result = requests.request(
@@ -274,8 +372,90 @@ class PipedriveHelper:
       return rest_result
     else:
       raise ValueError(result.content)
+  
+  def update_deal(self, deal_args: dict, deal_id: str) -> dict:
+    """
+    Parameters
+        ----------
+        deal_args : dict
+            Values for each column for a single deal. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "name": John's Deal, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+            }
+    """
+    update_url = self.deal_url+r"/"+deal_id
+
+    data = deal_args
+    add_time = datetime.now().strftime(r"%Y-%m-%d %H:%M:%S")
+    data["add_time"] = add_time
+
+    result = requests.request(
+      "PUT", 
+      update_url, 
+      data=data, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      # logging.debug("Deal Updated: "+str(result.status_code))
+
+      rest_result = {}
+      rest_result["status"] = "Deal Updated: "+str(result.status_code)
+      rest_result["data"] = None
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
+
+  def delete_deal(self, deal_id: str) -> dict:
+    """Deletes an existing deal in Pipedrive. Returns REST result status and API rate limit info.
+
+    Parameters
+        ----------
+        deal_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            delete_deal("1") # where "1" is the pipedrive product id
+    """
+
+    delete_url = self.deal_url+r"/"+deal_id
+
+    result = requests.request(
+      "DELETE", 
+      delete_url, 
+      headers=self.headers, 
+      params=self.api_token
+    )
+
+    if(result.reason == "OK"):
+      # logging.debug("Product Deleted: "+str(result.status_code))
+
+      rest_result = {}
+      rest_result["result"] = "Product Deleted: "+str(result.status_code)
+      rest_result["data"] = None
+      rest_result["headers"] = (
+        result.headers._store['x-ratelimit-limit'], 
+        result.headers._store['x-ratelimit-remaining'],
+        result.headers._store['x-ratelimit-reset'],
+        result.headers._store['x-daily-requests-left']
+      )
+      return rest_result
+    else:
+      raise ValueError(result.content)
+
   # /********** END - DEAL FUNCTIONS **********/
 
 if(__name__ == "__main__"):
   pass
-
