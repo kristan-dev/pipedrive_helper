@@ -172,11 +172,9 @@ class PipedriveHelper:
     )
 
     if(result.reason == "OK"):
-      # logging.debug("Person Deleted: "+str(result.status_code))
 
       rest_result = {}
-      rest_result["result"] = "Person Deleted: "+str(result.status_code)
-      rest_result["data"] = None
+      rest_result["status"] = "Person Deleted: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -224,7 +222,6 @@ class PipedriveHelper:
     if(result.reason == "Created"):
       rest_result = {}
       rest_result["status"] = "Product Created: "+str(result.status_code)
-      rest_result["data"] = None
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -308,7 +305,7 @@ class PipedriveHelper:
     if(result.reason == "OK"):
 
       rest_result = {}
-      rest_result["result"] = "Product Deleted: "+str(result.status_code)
+      rest_result["status"] = "Product Deleted: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
@@ -351,8 +348,8 @@ class PipedriveHelper:
     )
 
     if(result.reason == "Created"):
-      rest_result["status"] = "Deal Created: "+str(result.status_code)
       rest_result = {}
+      rest_result["status"] = "Deal Created: "+str(result.status_code)
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
