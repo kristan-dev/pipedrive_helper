@@ -9,3 +9,9 @@ tests/
 .DS_Store
 
 *.pyc
+
+release/dist/
+
+release/pipedrive_helper.egg-info/
+
+release/
