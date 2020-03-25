@@ -179,7 +179,6 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
         result.headers._store['x-ratelimit-reset'],
-        result.headers._store['x-daily-requests-left']
       )
       rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
@@ -310,7 +309,6 @@ class PipedriveHelper:
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
         result.headers._store['x-ratelimit-reset'],
-        result.headers._store['x-daily-requests-left']
       )
       rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
@@ -430,8 +428,7 @@ class PipedriveHelper:
       rest_result["headers"] = (
         result.headers._store['x-ratelimit-limit'], 
         result.headers._store['x-ratelimit-remaining'],
-        result.headers._store['x-ratelimit-reset'],
-        result.headers._store['x-daily-requests-left']
+        result.headers._store['x-ratelimit-reset']
       )
       rest_result["response"] = json.loads(result.text)["data"]
       return rest_result
