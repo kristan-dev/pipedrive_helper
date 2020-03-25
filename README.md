@@ -36,11 +36,12 @@ pipedrive_api.add_deal(data)
 ```
 
 ## Doc Strings
-These doc strings below can also be found by invoking `help()` function.
+The information below can also be found within the library as docstrings. Use `help()` to view them.
 
+```
 A class that simplifies the use of the Pipedrive REST API
 
-```    ...
+    ...
     Constructors
     ----------
     api_token : str
@@ -75,6 +76,161 @@ A class that simplifies the use of the Pipedrive REST API
         Updates an existing product in Pipedrive.
     delete_product(self, product_id: str) returns dict
         Deletes an existing product in Pipedrive.
+```
+
+Add Person
+```
+Adds a single contact in Pipedrive. Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "name": Luke, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+            }
+```
+
+Update Person
+```
+Updates an existing contact in Pipedrive. Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        person_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            Only add the fields/customfields you want to update.
+
+              data = {
+                "name": John, # where "name" is a sample of a default field
+                "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
+                }
+              update_product(data, "1")
+```
+
+Delete Person
+```
+Deletes an existing contact in Pipedrive. Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        person_id : str
+            Pipedrive person id
+            
+        Usage
+        ----------
+            delete_person("1") # where "1" is the pipedrive person id
+```
+
+Add Product
+```
+Add a single row to products in Piprdrive. Returns API call status and API rate limit info.
+
+Parameters
+        ----------
+        product_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "name": "SCPH-90006", # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+              }
+            add_product(data)
+```
+
+Update Product
+```
+Updates an existing product in Pipedrive.Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        product_args : dict
+            Values for each column for a single contact. Accepts default fields and custom fields.
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            Only add the fields/customfields you want to update.
+
+              data = {
+                "name": "SCPH-90006", # where "name" is a sample of a default field
+                "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of a custom field
+                }
+              update_product(data, "1")
+```
+
+Delete Product
+```
+Deletes an existing product in Pipedrive. Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        product_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            delete_product("1") # where "1" is the pipedrive product id
+```
+
+Add Deal
+```
+Creates a single deal to Pipedrive. Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        deal_args : dict
+            Values for each column for a single deal. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "title": John's Deal, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+            }
+```
+
+Update Deal
+```
+Updates an existing deal in Pipedrive.Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        deal_args : dict
+            Values for each column for a single deal. Accepts default fields and custom fields.
+            
+        Usage
+        ----------
+            data = {
+              "title": John's Deal, # where "name" is a sample of a default field
+              "74f20ffc505c9708d4f0958333b0cc1df74a2ee9": 92, # where "74f20ffc505c970..." is a sample of custom field
+            }
+```
+
+Delete Deal
+```
+Deletes an existing deal in Pipedrive. Returns REST result status and API rate limit info.
+
+Parameters
+        ----------
+        deal_id : str
+            Pipedrive product id
+            
+        Usage
+        ----------
+            delete_deal("1") # where "1" is the pipedrive product id
 ```
 
 ## Contributing
