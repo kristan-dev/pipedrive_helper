@@ -195,7 +195,7 @@ class PipedriveHelper:
 
     Parameters
         ----------
-        person_args : dict
+        product_args : dict
             Values for each column for a single contact. Accepts default fields and custom fields.
             
         Usage
@@ -319,7 +319,8 @@ class PipedriveHelper:
 
   # /********** START - DEAL FUNCTIONS **********/
   def add_deal(self, deal_args: dict) -> dict:
-    """
+    """Creates a single deal to Pipedrive. Returns REST result status and API rate limit info.
+
     Parameters
         ----------
         deal_args : dict
@@ -360,7 +361,8 @@ class PipedriveHelper:
       raise ValueError(result.content)
   
   def update_deal(self, deal_args: dict, deal_id: str) -> dict:
-    """
+    """Updates an existing deal in Pipedrive.Returns REST result status and API rate limit info.
+
     Parameters
         ----------
         deal_args : dict
