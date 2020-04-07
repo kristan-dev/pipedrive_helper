@@ -2,6 +2,12 @@
 
 This is a helper library for Pipedrive's rest API. At the moment, the helper is capable of Add, Update, and Delete for Persons, Products, and Deals. 
 
+This library is available in pypi.org to install:
+
+```
+python -m pip install pypedrive-helper
+```
+
 ## Getting Started
 
 Install all libraries in requirements.txt
