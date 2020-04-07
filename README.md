@@ -18,6 +18,11 @@ There is only one requirement for the moment, that is the `request` library.
 pip install -r requirements.txt
 ```
 
+To start using the class the after installing:
+```
+from pypedrivehelper.helper import PipedriveHelper
+```
+
 ## Prerequisites
 
 Your Pipedrive API Token is required to use all the methods of this helper.
