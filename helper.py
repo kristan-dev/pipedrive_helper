@@ -439,5 +439,8 @@ class PipedriveHelper:
 
   # /********** END - DEAL FUNCTIONS **********/
 
+  def attach_product_to_deal(self, product_id: str) -> dict:
+    pass
+
 if(__name__ == "__main__"):
   pass
